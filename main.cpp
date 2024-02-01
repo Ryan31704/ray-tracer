@@ -3,11 +3,27 @@
 #include"vec3.h"
 
 #include<iostream>
-color rayColor(const Ray& r)
+
+bool hitSphere(const point3& center, double radius, const ray& r)
 {
-  Vec3 unitDirection = unitVector(r.direction());
+  //use quadratic discriminant to see if solution on the sphere exists
+  vec3 oc = r.origin() - center;
+    auto a = dot(r.direction(), r.direction());
+    auto b = 2.0 * dot(oc, r.direction());
+    auto c = dot(oc, oc) - radius*radius;
+    auto discriminant = b*b - 4*a*c;
+    return (discriminant >= 0);
+}
+
+color rayColor(const ray& r)
+{
+  if(hitSphere(point3(0,0,-1), 0.5, r))
+  {
+    return color(1,0,0);
+  }
+  vec3 unitDirection = unitVector(r.direction());
   auto a = 0.5*(unitDirection.y() + 1.0);
-  return (1-a) * color(1.0,1.0,1.0) + a*color(0.5,0.7,1.0);
+  return (1.0 -a) * color(1.0,1.0,1.0) + a*color(0.5,0.7,1.0);
 }
 
 int main()
@@ -23,16 +39,16 @@ int main()
   auto focalLength = 1.0;
   auto viewportHeight = 2.0;
   auto viewportWidth = viewportHeight * (static_cast<double> (imageWidth)/ imageHeight);
-  auto cameraCenter = Point3(0,0,0);
+  auto cameraCenter = point3(0,0,0);
 
   //calc vectors across the horizontal and vertical viewport edges
-  auto viewportU = Vec3(viewportWidth, 0, 0);
-  auto viewportV = Vec3(0, -viewportWidth, 0);
+  auto viewportU = vec3(viewportWidth, 0, 0);
+  auto viewportV = vec3(0, -viewportHeight, 0);
   // Calculate the horizontal and vertical delta vectors from pixel to pixel.
   auto pixelDeltaU = viewportU / imageWidth;
   auto pixelDeltaV = viewportV / imageHeight;
   // Calculate the location of the upper left pixel.
-  auto viewportUpperLeft = cameraCenter - Vec3(0,0,focalLength) - viewportU/2 - viewportV/2;
+  auto viewportUpperLeft = cameraCenter - vec3(0,0,focalLength) - viewportU/2 - viewportV/2;
 
   auto pixel00Location = viewportUpperLeft + 0.5 * (pixelDeltaU + pixelDeltaV);
 
@@ -47,7 +63,7 @@ int main()
     {
       auto pixelCenter = pixel00Location + (i * pixelDeltaU) + (j * pixelDeltaV);
       auto rayDirection = pixelCenter - cameraCenter;
-      Ray r(cameraCenter, rayDirection);
+      ray r(cameraCenter, rayDirection);
 
       //assigns pixel to color based off ray
       color pixelColor = rayColor(r);
