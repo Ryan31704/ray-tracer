@@ -1,6 +1,6 @@
 //CURRENT PROGRESS
 //Ray tracing in one weekend
-//Part 6.3
+//Part 6.6
 #include"color.h"
 #include"ray.h"
 #include"vec3.h"
