@@ -1,6 +1,6 @@
 //CURRENT PROGRESS
 //Ray tracing in one weekend
-//Part 6
+//Part 6.3
 #include"color.h"
 #include"ray.h"
 #include"vec3.h"
@@ -11,10 +11,10 @@ double hitSphere(const point3& center, double radius, const ray& r)
 {
   //use quadratic discriminant to see if solution on the sphere exists
   vec3 oc = r.origin() - center;
-  auto a = dot(r.direction(), r.direction());
-  auto b = 2.0 * dot(oc, r.direction());
-  auto c = dot(oc, oc) - radius*radius;
-  auto discriminant = b*b - 4*a*c;
+  auto a = r.direction().lengthSquared();
+  auto bHalf = dot(oc, r.direction());
+  auto c = oc.lengthSquared() - radius*radius;
+  auto discriminant = bHalf * bHalf - a*c;
 
   if(discriminant < 0)
   {
@@ -22,7 +22,7 @@ double hitSphere(const point3& center, double radius, const ray& r)
   }
   else
   {
-    return(-b - sqrt(discriminant)) / (2.0 * a);
+    return(-bHalf - sqrt(discriminant)) / a;
   }
 }
 
