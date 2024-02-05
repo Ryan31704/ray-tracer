@@ -23,6 +23,7 @@ inline double degreesToRadians(double degrees)
 
 //common headers
 
+#include"interval.h"
 #include "ray.h"
 #include"vec3.h"
 

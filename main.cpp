@@ -1,12 +1,11 @@
 //CURRENT PROGRESS
 //Ray tracing in one weekend
-//Part 6.7
+//Part 6.8 adding interval to all files
 #include"rtweekend.h"
 #include"color.h"
 #include"hittable.h"
 #include"hittable_list.h"
 #include"sphere.h"
-
 #include<iostream>
 
 
