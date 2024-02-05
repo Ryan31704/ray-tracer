@@ -1,39 +1,23 @@
 //CURRENT PROGRESS
 //Ray tracing in one weekend
 //Part 6.7
+#include"rtweekend.h"
 #include"color.h"
-#include"ray.h"
-#include"vec3.h"
+#include"hittable.h"
+#include"hittable_list.h"
+#include"sphere.h"
 
 #include<iostream>
 
-double hitSphere(const point3& center, double radius, const ray& r)
-{
-  //use quadratic discriminant to see if solution on the sphere exists
-  vec3 oc = r.origin() - center;
-  auto a = r.direction().lengthSquared();
-  auto bHalf = dot(oc, r.direction());
-  auto c = oc.lengthSquared() - radius*radius;
-  auto discriminant = bHalf * bHalf - a*c;
 
-  if(discriminant < 0)
-  {
-    return -1.0;
-  }
-  else
-  {
-    return(-bHalf - sqrt(discriminant)) / a;
-  }
-}
-
-color rayColor(const ray& r)
+color rayColor(const ray& r, const hittable& world)
 {
-  auto distance = hitSphere(point3(0,0,-1), 0.5, r);
-  if(distance > 0.0)
+  hit_record record;
+  if(world.hit(r, 0, infinity, record))
   {
-    vec3 normal = unitVector(r.at(distance) - vec3(0,0,-1));
-    return 0.5*color(normal.x() + 1,normal.y() + 1,normal.z() + 1);
+    return 0.5 * (record.normal + color(1,1,1));
   }
+
   vec3 unitDirection = unitVector(r.direction());
   auto a = 0.5*(unitDirection.y() + 1.0);
   return (1.0 -a) * color(1.0,1.0,1.0) + a*color(0.5,0.7,1.0);
@@ -47,6 +31,12 @@ int main()
   int imageHeight = static_cast<int>(imageWidth / aspectRatio);
   // if image height is less than 1
   imageHeight = (imageHeight < 1) ? 1 : imageHeight;
+
+  //World
+  hittable_list world;
+  
+  world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+  world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
   
   //Camera stuff
   auto focalLength = 1.0;
@@ -79,8 +69,8 @@ int main()
       ray r(cameraCenter, rayDirection);
 
       //assigns pixel to color based off ray
-      color pixelColor = rayColor(r);
-      
+      color pixelColor = rayColor(r, world);
+
       writeColor(std::cout, pixelColor);
     }
   }
