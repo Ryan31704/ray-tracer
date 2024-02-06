@@ -1,6 +1,6 @@
 //CURRENT PROGRESS
 //Ray tracing in one weekend
-//Part 7
+//Part 8 anti aliasing listing 39
 #include"rtweekend.h"
 #include"camera.h"
 #include"hittable_list.h"
@@ -16,6 +16,7 @@ int main()
 
   cam.aspectRatio = 16.0 / 9.0;
   cam.imageWidth  = 400;
+  cam.samplesPerPixel = 100;
 
   cam.render(world);
 }

@@ -12,6 +12,7 @@ class camera
   public:
     double aspectRatio = 1.0;
     int imageWidth = 100;
+    int samplesPerPixel = 10;
     void render(const hittable&world)
     {
       initialize();
@@ -22,14 +23,12 @@ class camera
         std::clog << "\rScanlines: " << (imageHeight - j) << ' ' << std::flush;
         for(int i = 0; i < imageWidth; i++)
         {
-          auto pixelCenter = pixel00Location + (i * pixelDeltaU) + (j * pixelDeltaV);
-          auto rayDirection = pixelCenter - cameraCenter;
-          ray r(cameraCenter, rayDirection);
-
-          //assigns pixel to color based off ray
-          color pixelColor = rayColor(r, world);
-
-          writeColor(std::cout, pixelColor);
+          color pixel_color(0,0,0);
+          for (int sample = 0; sample < samplesPerPixel; ++sample) {
+            ray r = getRay(i, j);
+            pixel_color += rayColor(r, world);
+          }
+          writeColor(std::cout, pixel_color, samplesPerPixel);
         }
       }
       std::clog << "\rDone.                 \n";
@@ -64,6 +63,24 @@ class camera
         auto viewport_upper_left =
             cameraCenter - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2;
         pixel00Location = viewport_upper_left + 0.5 * (pixelDeltaU + pixelDeltaV);
+    }
+    ray getRay(int i, int j) const {
+    // Get a randomly sampled camera ray for the pixel at location i,j.
+
+    auto pixelCenter = pixel00Location + (i * pixelDeltaU) + (j * pixelDeltaV);
+    auto pixelSample = pixelCenter + pixelSample_square();
+
+    auto rayOrigin = cameraCenter;
+    auto ray_direction = pixelSample - rayOrigin;
+
+    return ray(rayOrigin, ray_direction);
+    }
+
+    vec3 pixelSample_square() const {
+    // Returns a random point in the square surrounding a pixel at the origin.
+    auto px = -0.5 + randomDouble();
+    auto py = -0.5 + randomDouble();
+    return (px * pixelDeltaU) + (py * pixelDeltaV);
     }
 
     color rayColor(const ray& r, const hittable& world) const
