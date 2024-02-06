@@ -20,15 +20,15 @@ class hittable_list : public hittable
   void clear() { objects.clear(); }
 
   void add(shared_ptr<hittable> object) { objects.push_back(object); }
-  bool hit(const ray& r, double ray_tmin, double ray_tmax, hit_record& rec) const override 
+  bool hit(const ray& r, interval rayT, hit_record& rec) const override 
   {
     hit_record tempRec;
     bool hitAnything = false;
-    auto closestSoFar = ray_tmax;
+    auto closestSoFar = rayT.max;
 
     for (const auto& object : objects)
     {
-      if (object->hit(r, ray_tmin, closestSoFar, tempRec)) 
+      if (object->hit(r, interval(rayT.min, closestSoFar), tempRec)) 
       {
         hitAnything = true;
         closestSoFar = tempRec.t;

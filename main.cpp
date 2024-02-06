@@ -1,6 +1,6 @@
 //CURRENT PROGRESS
 //Ray tracing in one weekend
-//Part 6.8 adding interval to all files
+//Part 7
 #include"rtweekend.h"
 #include"color.h"
 #include"hittable.h"
@@ -12,7 +12,7 @@
 color rayColor(const ray& r, const hittable& world)
 {
   hit_record record;
-  if(world.hit(r, 0, infinity, record))
+  if(world.hit(r, interval(0,infinity), record))
   {
     return 0.5 * (record.normal + color(1,1,1));
   }
