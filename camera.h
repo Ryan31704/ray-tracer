@@ -14,6 +14,7 @@ class camera
     int imageWidth = 100;
     int samplesPerPixel = 10;
     int maxDepth = 10; //max number of ray bounces 
+    double reflectance = 0.5;
 
     void render(const hittable&world)
     {
@@ -95,7 +96,7 @@ class camera
       {
         vec3 direction = record.normal + randomUnitVector();
         //more reflectance is more white
-        return 0.7 * rayColor(ray(record.p, direction), maxDepth,world);
+        return reflectance * rayColor(ray(record.p, direction), maxDepth,world);
       }
 
       vec3 unitDirection = unitVector(r.direction());

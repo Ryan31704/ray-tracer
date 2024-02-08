@@ -18,6 +18,7 @@ int main()
   cam.imageWidth  = 400;
   cam.samplesPerPixel = 100;
   cam.maxDepth = 50;
+  cam.reflectance = 0.7;
 
   cam.render(world);
 }
