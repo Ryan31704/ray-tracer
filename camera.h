@@ -13,6 +13,8 @@ class camera
     double aspectRatio = 1.0;
     int imageWidth = 100;
     int samplesPerPixel = 10;
+    int maxDepth = 10; //max number of ray bounces 
+
     void render(const hittable&world)
     {
       initialize();
@@ -26,7 +28,7 @@ class camera
           color pixel_color(0,0,0);
           for (int sample = 0; sample < samplesPerPixel; ++sample) {
             ray r = getRay(i, j);
-            pixel_color += rayColor(r, world);
+            pixel_color += rayColor(r, maxDepth, world);
           }
           writeColor(std::cout, pixel_color, samplesPerPixel);
         }
@@ -83,12 +85,16 @@ class camera
     return (px * pixelDeltaU) + (py * pixelDeltaV);
     }
 
-    color rayColor(const ray& r, const hittable& world) const
+    color rayColor(const ray& r, int depth, const hittable& world) const
     {
+      if(depth <=0)
+        return color(0,0,0);
+
       hit_record record;
       if(world.hit(r, interval(0,infinity), record))
       {
-        return 0.5 * (record.normal + color(1,1,1));
+        vec3 direction = randomOnHemisphere(record.normal);
+        return 0.5 * rayColor(ray(record.p, direction), maxDepth,world);
       }
 
       vec3 unitDirection = unitVector(r.direction());

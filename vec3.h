@@ -49,6 +49,14 @@ class vec3{
   double lengthSquared() const{
     return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
   }
+  static vec3 random()
+  {
+    return vec3(randomDouble(), randomDouble(), randomDouble());
+  }
+  static vec3 random(double min, double max)
+  {
+    return vec3(randomDouble(min,max), randomDouble(min,max), randomDouble(min,max));
+  }
 };
 
 // point3 is just an alias for vec3, but useful for geometric clarity in the code
@@ -108,4 +116,29 @@ inline vec3 unitVector(vec3 v)
 {
   return v / v.length();
 }
+
+inline vec3 randomInUnitSphere()
+{
+  while(true)
+  {
+    auto p = vec3::random(-1,1);
+    if(p.lengthSquared() < 1)
+      return p;
+  }
+}
+
+inline vec3 randomUnitVector()
+{
+  return unitVector(randomInUnitSphere());
+}
+
+inline vec3 randomOnHemisphere(const vec3& normal)
+{
+  vec3 onUnitSphere = randomUnitVector();
+  if(dot(onUnitSphere, normal) > 0.0)
+    return onUnitSphere;
+  else
+    return -onUnitSphere;
+}
+
 #endif
