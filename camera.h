@@ -91,10 +91,11 @@ class camera
         return color(0,0,0);
 
       hit_record record;
-      if(world.hit(r, interval(0,infinity), record))
+      if(world.hit(r, interval(0.001,infinity), record))
       {
-        vec3 direction = randomOnHemisphere(record.normal);
-        return 0.5 * rayColor(ray(record.p, direction), maxDepth,world);
+        vec3 direction = record.normal + randomUnitVector();
+        //more reflectance is more white
+        return 0.7 * rayColor(ray(record.p, direction), maxDepth,world);
       }
 
       vec3 unitDirection = unitVector(r.direction());
