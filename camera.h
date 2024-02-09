@@ -2,8 +2,10 @@
 #define CAMERA_H
 
 #include"rtweekend.h"
+
 #include"color.h"
 #include"hittable.h"
+#include"material.h"
 
 #include<iostream>
 
@@ -14,7 +16,7 @@ class camera
     int imageWidth = 100;
     int samplesPerPixel = 10;
     int maxDepth = 10; //max number of ray bounces 
-    double reflectance = 0.5;
+    //double reflectance = 0.5;
 
     void render(const hittable&world)
     {
@@ -94,9 +96,11 @@ class camera
       hit_record record;
       if(world.hit(r, interval(0.001,infinity), record))
       {
-        vec3 direction = record.normal + randomUnitVector();
-        //more reflectance is more white
-        return reflectance * rayColor(ray(record.p, direction), maxDepth,world);
+        ray scattered;
+        color attenuation;
+        if(record.mat->scatter(r, record, attenuation, scattered))
+          return attenuation * rayColor(scattered, depth-1, world);
+        return color(0,0,0);
       }
 
       vec3 unitDirection = unitVector(r.direction());
