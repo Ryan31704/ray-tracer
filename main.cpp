@@ -1,6 +1,6 @@
 //CURRENT PROGRESS
 //Ray tracing in one weekend
-//Part 10.6
+//Part 12
 #include"rtweekend.h"
 #include"camera.h"
 #include"color.h"
@@ -13,7 +13,7 @@ int main()
   hittable_list world;
   auto materialGround = make_shared<lambertian>(color(0.8,0.8,0));
   auto materialCenter = make_shared<lambertian>(color(0.2,0.2,0.8));
-  auto materialLeft = make_shared<metal>(color(0.8,0.8,0.8), 0.3);
+  auto materialLeft = make_shared<dielectric>(1.5);
   auto materialRight = make_shared<metal>(color(1.0,0.2,0.2), 0.8);
 
   //standard scene

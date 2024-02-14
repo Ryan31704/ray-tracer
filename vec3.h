@@ -145,9 +145,17 @@ inline vec3 randomOnHemisphere(const vec3& normal)
     return -onUnitSphere;
 }
 
-vec3 reflect(const vec3& v, const vec3& normal)
+inline vec3 reflect(const vec3& v, const vec3& normal)
 {
   return v - 2*dot(v,normal)*normal;
+}
+
+inline vec3 refract(const vec3& uv, const vec3& n, double etaiOverEtat)
+{
+  auto cosTheta = fmin(dot(-uv, n) , 1.0);
+  vec3 rOutPerp = etaiOverEtat * (uv + cosTheta * n);
+  vec3 rOutParallel = -sqrt(fabs(1.0 - rOutPerp.lengthSquared())) * n;
+  return rOutPerp + rOutParallel;
 }
 
 #endif
