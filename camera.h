@@ -29,6 +29,7 @@ class camera
       initialize();
       std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
 
+// multi threading babyyyyyy
       for(int j = 0; j < imageHeight; j++)
       {
         std::clog << "\rScanlines: " << (imageHeight - j) << ' ' << std::flush;
