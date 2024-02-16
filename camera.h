@@ -8,6 +8,8 @@
 #include"material.h"
 
 #include<iostream>
+#include <thread>
+#include <vector>
 
 class camera
 {
@@ -29,7 +31,8 @@ class camera
       initialize();
       std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
 
-// multi threading babyyyyyy
+      // multi threading babyyyyyy
+      unsigned int numThreads = std::thread::hardware_concurrency();
       for(int j = 0; j < imageHeight; j++)
       {
         std::clog << "\rScanlines: " << (imageHeight - j) << ' ' << std::flush;
