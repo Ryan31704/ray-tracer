@@ -53,6 +53,7 @@ class metal : public material
     double fuzz;
 };
 
+//glass mat may be wrong double check with book
 class dielectric : public material
 {
   public:
